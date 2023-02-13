@@ -1,2 +1,2 @@
 # bookmarklets
-Personnal bookmarklets usable by all
+Personal bookmarklets open to all
