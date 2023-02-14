@@ -42,14 +42,19 @@ async function main()
 
     console.log("bookmarklets", bookmarklets)
 
-    let outputPath = path.resolve(bookmarkletsPath, "../../output/index.html");
+    let outputPath = path.resolve(bookmarkletsPath, "../../output");
+    let htmlOutputPath = path.resolve(outputPath, "index.html");
     let contentToWrite = bookmarklets.join("\n");
     
     let templatePath = path.join(__dirname, "template.html");
     let templateContent = fs.readFileSync(templatePath, "utf-8");
     let replacedContent = templateContent.replace("{BOOKMARKLETS}", contentToWrite);
+
+    if (!fs.existsSync(outputPath)){
+        fs.mkdirSync(outputPath);
+    }
     
-    fs.writeFileSync(outputPath, replacedContent, () => {} );
+    fs.writeFileSync(htmlOutputPath, replacedContent, () => {} );
 }
 
 main();
