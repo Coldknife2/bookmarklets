@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { minify } = require("terser");
+const pretty = require('pretty');
 
 const terserOptions = {
     module: true
@@ -34,9 +35,9 @@ async function main()
 
     await filesToTreat.forEach(async([filePath, fileName]) => {
         let content = fs.readFileSync(filePath, "utf-8");
-        let compressedContent = (await minify(content, terserOptions)).code;
+        let compressedContent = (await minify(content, terserOptions)).code.replace(/\/\..+$/gm, "");
         let bookmarkletContent = `javascript:(function(){${encodeURI(compressedContent)}})()`;
-        let htmlContent = `<p><a href=${bookmarkletContent}>${fileName}</a></p>`;
+        let htmlContent = `<p><a href="${bookmarkletContent}">${fileName}</a></p>`;
         bookmarklets.push(htmlContent);
     });
 
@@ -48,7 +49,7 @@ async function main()
     
     let templatePath = path.join(__dirname, "template.html");
     let templateContent = fs.readFileSync(templatePath, "utf-8");
-    let replacedContent = templateContent.replace("{BOOKMARKLETS}", contentToWrite);
+    let replacedContent = pretty(templateContent.replace("{BOOKMARKLETS}", contentToWrite), {ocd: true});
 
     if (!fs.existsSync(outputPath)){
         fs.mkdirSync(outputPath);
