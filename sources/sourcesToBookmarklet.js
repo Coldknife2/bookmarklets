@@ -35,7 +35,7 @@ async function main()
 
     await filesToTreat.forEach(async([filePath, fileName]) => {
         let content = fs.readFileSync(filePath, "utf-8");
-        let compressedContent = (await minify(content, terserOptions)).code.replace(/\/\..+$/gm, "");
+        let compressedContent = (await minify(content, terserOptions)).code;
         let bookmarkletContent = `javascript:(function(){${encodeURI(compressedContent)}})()`;
         let htmlContent = `<p><a href="${bookmarkletContent}">${fileName}</a></p>`;
         bookmarklets.push(htmlContent);
